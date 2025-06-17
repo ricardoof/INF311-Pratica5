@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">pratica5</string>
+    <string name="checkInLocais">checkInLocais</string>
+    <string name="nomeDoLocal">Nome do local:</string>
+</resources>
