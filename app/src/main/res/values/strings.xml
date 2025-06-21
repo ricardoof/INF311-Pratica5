@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">pratica5</string>
     <string name="checkInLocais">checkInLocais</string>
+    <string name="mapaDeCheckIn">Mapa de check-in</string>
+    <string name="gestaoDeCheckIn">Gestão de Check-in</string>
+    <string name="lugaresMaisVisitados">Lugares mais visitados</string>
     <string name="nomeDoLocal">Nome do local:</string>
+    <string name="categoriaDoLocal">Categoria do local:</string>
+    <string name="posicionamentoGlobal">Posicionamento Global</string>
+    <string name="latitude">Latitude:</string>
+    <string name="longitude">Longitude:</string>
+    <string name="checkIn">CHECK-IN</string>
+    <string name="voltar">Voltar</string>
+    <string name="tiposDeMapa">Tipos de mapa</string>
 </resources>
