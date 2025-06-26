@@ -26,8 +26,8 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap map;
     private Cursor locais;
     public LatLng coordenada;
-    public Marker marcadorLocal;
-    private String local;
+    private String local, categoria;
+    private double latitude, longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,26 +78,35 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        Log.d("MAPA", "MAPA");
         map = googleMap;
         BancoDadosSingleton bd = BancoDadosSingleton.getInstance();
-        locais = bd.buscar("Checkin", new String[]{"Local", "qtdVisitas", "cat", "latitude", "longitude"}, null, null);
+        //locais = bd.buscar("Checkin", new String[]{"Local", "qtdVisitas", "cat", "latitude", "longitude"}, null, null);
+        locais = bd.buscar("Checkin ch, Categoria cat", new String[]{"ch.Local Local",
+                        "ch.latitude lat",
+                        "ch.longitude lng",
+                        "ch.qtdVisitas visitas",
+                        "cat.nome nomeCategoria"
+                }, "ch.cat = cat.idCategoria", null);
+
         if(locais.moveToFirst()) {
             do {
-                local = String.valueOf(locais.getString(locais.getColumnIndexOrThrow("Local")));
-                double visitas = locais.getDouble(locais.getColumnIndexOrThrow("qtdVisitas"));
-                double categoria = locais.getDouble(locais.getColumnIndexOrThrow("cat"));
-                double latitude = locais.getDouble(locais.getColumnIndexOrThrow("latitude"));
-                double longitude = locais.getDouble(locais.getColumnIndexOrThrow("longitude"));
+                local = locais.getString(locais.getColumnIndexOrThrow("Local"));
+                categoria = locais.getString(locais.getColumnIndexOrThrow("nomeCategoria"));
+                latitude = locais.getDouble(locais.getColumnIndexOrThrow("lat"));
+                longitude = locais.getDouble(locais.getColumnIndexOrThrow("lng"));
+                int visitas = locais.getInt(locais.getColumnIndexOrThrow("visitas"));
+
                 coordenada = new LatLng(latitude, longitude);
-                map.addMarker(new MarkerOptions().position(coordenada).title(local));
+                map.addMarker(new MarkerOptions().position(coordenada).title(local).snippet("Categoria: " + categoria + " Visitas: " + visitas));
             } while (locais.moveToNext());
         }
 
-        // Opcional: mover a câmera para o primeiro local
         if (locais.getCount() > 0) {
             locais.moveToFirst();
-            double firstLat = locais.getDouble(locais.getColumnIndexOrThrow("latitude"));
-            double firstLong = locais.getDouble(locais.getColumnIndexOrThrow("longitude"));
+            double firstLat = locais.getDouble(locais.getColumnIndexOrThrow("lat"));
+            double firstLong = locais.getDouble(locais.getColumnIndexOrThrow("lng"));
             LatLng firstCoord = new LatLng(firstLat, firstLong);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(firstCoord, 16));
         }

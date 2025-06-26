@@ -136,11 +136,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkIn(View v) {
         nomeDoLocal = findViewById(R.id.edtNomeDoLocal);
-        String nomeDoLocalStr = nomeDoLocal.getText().toString();
+        String Local = nomeDoLocal.getText().toString();
         spinner.getSelectedItem().toString();
 
         // Validação: Nome do local
-        if (nomeDoLocalStr.isEmpty()) {
+        if (Local.isEmpty()) {
             Toast.makeText(this, "Por favor, insira o nome do local.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -157,26 +157,34 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        int categoriaId = spinner.getSelectedItemPosition() + 1;
 
         BancoDadosSingleton bd = BancoDadosSingleton.getInstance();
-        Cursor cursor = bd.buscar("Checkin", new String[]{"Local", "qtdVisitas", "cat", "latitude", "longitude"}, "Local = '" + nomeDoLocalStr + "'", null);
+
+        String nomeCategoria = spinner.getSelectedItem().toString();
+        Cursor c = bd.buscar("Categoria", new String[]{"idCategoria"}, "nome = '" + nomeCategoria + "'", null);
+        int categoriaId = -1;
+        if (c.moveToFirst()) {
+            categoriaId = c.getInt(c.getColumnIndexOrThrow("idCategoria"));
+        }
+        c.close();
+
+        Cursor cursor = bd.buscar("Checkin", new String[]{"Local", "qtdVisitas", "cat", "latitude", "longitude"}, "Local = '" + Local + "'", null);
         valores = new ContentValues();
 
         // Se o local já existe no bd atualiza o qtdVisitas
         if (cursor.moveToFirst()){
             int qtdVisitasAtual = cursor.getInt(cursor.getColumnIndexOrThrow("qtdVisitas"));
             valores.put("qtdVisitas", qtdVisitasAtual + 1);
-            bd.atualizar("Checkin", valores, "Local = '" + nomeDoLocalStr + "'");
+            bd.atualizar("Checkin", valores, "Local = '" + Local + "'");
             Toast.makeText(this, "Check-in atualizado!", Toast.LENGTH_SHORT).show();
         } else {
             // -20.756130344704516, -42.87517139116986 fazendiha
             //-20.757293764873097, -42.87511449290152  ufv
-            valores.put("Local", nomeDoLocalStr);
+            valores.put("Local", Local);
             valores.put("qtdVisitas", 1);
             valores.put("cat", categoriaId);
-            valores.put("latitude", -20.756130344704516);
-            valores.put("longitude", -42.87517139116986);
+            valores.put("latitude", -20.757293764873097);
+            valores.put("longitude", -42.87511449290152);
             bd.inserir("Checkin", valores);
             Toast.makeText(this, "Check-in realizado!", Toast.LENGTH_SHORT).show();
         }
