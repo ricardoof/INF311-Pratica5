@@ -1,9 +1,14 @@
 package com.example.pratica5;
 
+import android.app.AlertDialog;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 public class Gestao extends AppCompatActivity {
 
     private Toolbar toolbar;
+    LinearLayout layoutConteudo, layoutDeletar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +27,11 @@ public class Gestao extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbarGestao);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("GestãoCheckin");
+
+        layoutConteudo = findViewById(R.id.layoutConteudo);
+        layoutDeletar = findViewById(R.id.layoutDeletar);
+
+        carregarCheckins();
     }
 
     @Override
@@ -37,5 +48,53 @@ public class Gestao extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void carregarCheckins() {
+        layoutConteudo.removeAllViews();
+        layoutDeletar.removeAllViews();
+
+        BancoDadosSingleton bd = BancoDadosSingleton.getInstance();
+        Cursor cursor = bd.buscar("Checkin", new String[]{"Local"}, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String nomeLocal = cursor.getString(cursor.getColumnIndexOrThrow("Local"));
+
+                // TextView do nome do local
+                TextView txtLocal = new TextView(this);
+                txtLocal.setText(nomeLocal);
+                txtLocal.setTextSize(16f);
+                txtLocal.setPadding(16, 16, 16, 16);
+                layoutConteudo.addView(txtLocal);
+
+                // Botão de exclusão
+                ImageButton btnExcluir = new ImageButton(this);
+                btnExcluir.setImageResource(android.R.drawable.ic_delete);
+                btnExcluir.setBackground(null);
+                btnExcluir.setTag(nomeLocal); // Salva nome como tag
+                btnExcluir.setContentDescription("Excluir " + nomeLocal);
+                layoutDeletar.addView(btnExcluir);
+
+                // Evento de clique
+                btnExcluir.setOnClickListener(view -> {
+                    String localParaExcluir = (String) view.getTag();
+                    Log.d("DEBUG", "Tentando excluir: '" + localParaExcluir + "'");
+
+                    new AlertDialog.Builder(Gestao.this)
+                            .setTitle("Exclusão")
+                            .setMessage("Tem certeza que deseja excluir " + localParaExcluir + "?")
+                            .setNegativeButton("NÃO", null)
+                            .setPositiveButton("SIM", (dialog, which) -> {
+                                bd.deletar("Checkin", "Local = ?", new String[]{localParaExcluir});
+
+                                finish();
+                                startActivity(getIntent());
+                            })
+                            .show();
+                });
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
     }
 }

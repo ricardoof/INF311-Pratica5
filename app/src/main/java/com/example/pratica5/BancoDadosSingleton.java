@@ -57,8 +57,8 @@ public final class BancoDadosSingleton {
         return count;
     }
 
-    public int deletar(String tabela, String where) {
-        int count = db.delete(tabela, where, null);
+    public int deletar(String tabela, String where, String[] whereArgs) {
+        int count = db.delete(tabela, where, whereArgs);
         Log.i("BANCO_DADOS", "Deletou [" + count + "] registros");
         return count;
     }

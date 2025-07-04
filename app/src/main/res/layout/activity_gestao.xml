@@ -14,12 +14,39 @@
         android:background="?attr/colorPrimary" />
 
     <TextView
+        android:id="@+id/gestao"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbarGestao"
+        android:text="@string/gestaoDeCheckIn"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_margin="10sp"
+        android:gravity="center_horizontal"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gestao"
+        android:layout_marginHorizontal="10sp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/local"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/excluir" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_below="@id/linearLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,16 +55,18 @@
 
             <LinearLayout
                 android:id="@+id/layoutConteudo"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/layoutDeletar"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight="1">
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

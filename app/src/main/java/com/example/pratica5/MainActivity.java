@@ -177,11 +177,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // -20.756130344704516, -42.87517139116986 fazendiha
             //-20.757293764873097, -42.87511449290152  ufv
+            // -20.76061471367571, -42.86852732141032 ru1
             valores.put("Local", Local);
             valores.put("qtdVisitas", 1);
             valores.put("cat", categoriaId);
-            valores.put("latitude", -20.757293764873097);
-            valores.put("longitude", -42.87511449290152);
+            valores.put("latitude", -20.756130344704516);
+            valores.put("longitude", -42.87517139116986);
             bd.inserir("Checkin", valores);
             Toast.makeText(this, "Check-in realizado!", Toast.LENGTH_SHORT).show();
         }
