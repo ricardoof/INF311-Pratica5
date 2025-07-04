@@ -178,11 +178,14 @@ public class MainActivity extends AppCompatActivity {
             // -20.756130344704516, -42.87517139116986 fazendiha
             //-20.757293764873097, -42.87511449290152  ufv
             // -20.76061471367571, -42.86852732141032 ru1
+            // -20.761858702321916, -42.86985769702954 mu
+            // -20.760559731284303, -42.86758498853464 pva
+            // -20.763560397840216, -42.86630288141098 pvb
             valores.put("Local", Local);
             valores.put("qtdVisitas", 1);
             valores.put("cat", categoriaId);
-            valores.put("latitude", -20.756130344704516);
-            valores.put("longitude", -42.87517139116986);
+            valores.put("latitude", -20.760559731284303);
+            valores.put("longitude", -42.86758498853464);
             bd.inserir("Checkin", valores);
             Toast.makeText(this, "Check-in realizado!", Toast.LENGTH_SHORT).show();
         }

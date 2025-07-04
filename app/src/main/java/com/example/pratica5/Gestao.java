@@ -3,7 +3,6 @@ package com.example.pratica5;
 import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
@@ -23,13 +22,12 @@ public class Gestao extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gestao);
 
-        // Toolbar
         toolbar = findViewById(R.id.toolbarGestao);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("GestãoCheckin");
 
-        layoutConteudo = findViewById(R.id.layoutConteudo);
-        layoutDeletar = findViewById(R.id.layoutDeletar);
+        layoutConteudo = findViewById(R.id.layoutConteudoGestao);
+        layoutDeletar = findViewById(R.id.layoutDeletarGestao);
 
         carregarCheckins();
     }
@@ -65,22 +63,21 @@ public class Gestao extends AppCompatActivity {
                 TextView txtLocal = new TextView(this);
                 txtLocal.setText(nomeLocal);
                 txtLocal.setTextSize(16f);
-                txtLocal.setPadding(16, 16, 16, 16);
+                txtLocal.setPadding(20, 20, 20, 20);
                 layoutConteudo.addView(txtLocal);
 
                 // Botão de exclusão
                 ImageButton btnExcluir = new ImageButton(this);
                 btnExcluir.setImageResource(android.R.drawable.ic_delete);
                 btnExcluir.setBackground(null);
-                btnExcluir.setTag(nomeLocal); // Salva nome como tag
+                btnExcluir.setTag(nomeLocal);
                 btnExcluir.setContentDescription("Excluir " + nomeLocal);
+                btnExcluir.setPadding(20, 20, 20, 20);
                 layoutDeletar.addView(btnExcluir);
 
                 // Evento de clique
                 btnExcluir.setOnClickListener(view -> {
                     String localParaExcluir = (String) view.getTag();
-                    Log.d("DEBUG", "Tentando excluir: '" + localParaExcluir + "'");
-
                     new AlertDialog.Builder(Gestao.this)
                             .setTitle("Exclusão")
                             .setMessage("Tem certeza que deseja excluir " + localParaExcluir + "?")

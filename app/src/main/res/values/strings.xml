@@ -17,4 +17,6 @@
     <string name="gestaoDeCheckin">Gestão de Check-in</string>
     <string name="local">LOCAL:</string>
     <string name="excluir">Excluir?</string>
+    <string name="locaisMaisVisitados">Locais Mais Visitados</string>
+    <string name="visitas">Visitas:</string>
 </resources>
