@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private LocationCallback locationCallback;
     private double latitudeAtual, longitudeAtual;
     private Toolbar toolbar;
-    //private EditText nomeDoLocal;
     private AutoCompleteTextView nomeDoLocal;
     private ContentValues valores;
 
@@ -156,8 +154,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Aguarde o GPS obter sua localização.", Toast.LENGTH_SHORT).show();
             return;
         }
-
-
+        
         BancoDadosSingleton bd = BancoDadosSingleton.getInstance();
 
         String nomeCategoria = spinner.getSelectedItem().toString();

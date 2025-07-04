@@ -12,4 +12,6 @@
     <string name="checkIn">CHECK-IN</string>
     <string name="voltar">Voltar</string>
     <string name="tiposDeMapa">Tipos de mapa</string>
+    <string name="mapaNormal">MAPA NORMAL</string>
+    <string name="mapaHibrido">MAPA HÍBRIDO</string>
 </resources>

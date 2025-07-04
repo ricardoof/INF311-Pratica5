@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/voltar"
+        android:id="@+id/voltarMapa"
         android:title="@string/voltar"
         android:orderInCategory="1"
         app:showAsAction="never" />
@@ -23,6 +23,15 @@
         android:id="@+id/tiposDeMapa"
         android:title="@string/tiposDeMapa"
         android:orderInCategory="4"
-        app:showAsAction="never"/>
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/mapaNormal"
+                android:title="@string/mapaNormal" />
+            <item
+                android:id="@+id/mapaHibrido"
+                android:title="@string/mapaHibrido" />
+        </menu>
+    </item>
 
 </menu>

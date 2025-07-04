@@ -34,13 +34,10 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa);
 
-        Log.d("MAPA", "Entrei na tela do mapa");
-
         // Toolbar
         toolbar = findViewById(R.id.toolbarMapa);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("MapaCheckin");
-
         ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa)).getMapAsync(this);
     }
 
@@ -53,42 +50,37 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.voltar) {
-            Toast.makeText(this, "Mapa de check-in", Toast.LENGTH_SHORT).show();
+        if (id == R.id.voltarMapa) {
             finish();
             return true;
         } else if (id == R.id.gestaoDeCheckIn) {
-            Toast.makeText(this, "Gestão de check-in", Toast.LENGTH_SHORT).show();
-            Intent gestao = new Intent(getBaseContext(), Mapa.class);
+            Intent gestao = new Intent(getBaseContext(), Gestao.class);
             startActivity(gestao);
             return true;
         } else if (id == R.id.lugaresMaisVisitados) {
-            Toast.makeText(this, "Lugares mais visitados", Toast.LENGTH_SHORT).show();
-            Intent lugares = new Intent(getBaseContext(), Mapa.class);
+            Intent lugares = new Intent(getBaseContext(), Relatorio.class);
             startActivity(lugares);
             return true;
-        } else if (id == R.id.tiposDeMapa) {
-            Toast.makeText(this, "Tipos de mapas", Toast.LENGTH_SHORT).show();
-            Intent tipos = new Intent(getBaseContext(), Mapa.class);
-            startActivity(tipos);
+        } else if (id == R.id.mapaNormal) {
+            if (map != null) {
+                map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            }
+            return true;
+        } else if (id == R.id.mapaHibrido) {
+            if (map != null) {
+                map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            }
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         Log.d("MAPA", "MAPA");
         map = googleMap;
         BancoDadosSingleton bd = BancoDadosSingleton.getInstance();
-        //locais = bd.buscar("Checkin", new String[]{"Local", "qtdVisitas", "cat", "latitude", "longitude"}, null, null);
-        locais = bd.buscar("Checkin ch, Categoria cat", new String[]{"ch.Local Local",
-                        "ch.latitude lat",
-                        "ch.longitude lng",
-                        "ch.qtdVisitas visitas",
-                        "cat.nome nomeCategoria"
-                }, "ch.cat = cat.idCategoria", null);
+        locais = bd.buscar("Checkin ch, Categoria cat", new String[]{"ch.Local Local", "ch.latitude lat", "ch.longitude lng", "ch.qtdVisitas visitas", "cat.nome nomeCategoria"}, "ch.cat = cat.idCategoria", null);
 
         if(locais.moveToFirst()) {
             do {
@@ -97,7 +89,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                 latitude = locais.getDouble(locais.getColumnIndexOrThrow("lat"));
                 longitude = locais.getDouble(locais.getColumnIndexOrThrow("lng"));
                 int visitas = locais.getInt(locais.getColumnIndexOrThrow("visitas"));
-
                 coordenada = new LatLng(latitude, longitude);
                 map.addMarker(new MarkerOptions().position(coordenada).title(local).snippet("Categoria: " + categoria + " Visitas: " + visitas));
             } while (locais.moveToNext());
@@ -110,7 +101,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
             LatLng firstCoord = new LatLng(firstLat, firstLong);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(firstCoord, 16));
         }
-
         locais.close();
     }
 }
