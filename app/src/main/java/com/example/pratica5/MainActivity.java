@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,28 +45,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("MainActivity", "entrei no onCreate");
-
-        // Toolbar
         toolbar = findViewById(R.id.toolbarTelaPrincipal);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("CheckInLocais");
 
-        // Autocomplete
         nomeDoLocal = findViewById(R.id.edtNomeDoLocal);
         List<String> locaisSalvos = buscarLocaisSalvos();
         ArrayAdapter<String> adapterLocais = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, locaisSalvos);
         nomeDoLocal.setThreshold(2);
         nomeDoLocal.setAdapter(adapterLocais);
 
-        // Menu de categorias
         spinner = findViewById(R.id.spinnerCategoriaDoLocal);
         List<String> categorias = buscarCategorias();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categorias);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        // Posicionamento global
         latitude = findViewById(R.id.latitude);
         longitude = findViewById(R.id.longitude);
         posicionamentoGlobal = LocationServices.getFusedLocationProviderClient(this);
@@ -117,7 +110,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.mapaDeCheckIn) {
+            if (latitudeAtual == 0.0 && longitudeAtual == 0.0) {
+                Toast.makeText(this, "Aguardando localização atual...", Toast.LENGTH_SHORT).show();
+                return true;
+            }
             Intent mapa = new Intent(getBaseContext(), Mapa.class);
+            mapa.putExtra("latitudeAtual", latitudeAtual);
+            mapa.putExtra("longitudeAtual", longitudeAtual);
             startActivity(mapa);
             return true;
         } else if (id == R.id.gestaoDeCheckIn) {
@@ -137,26 +136,20 @@ public class MainActivity extends AppCompatActivity {
         String Local = nomeDoLocal.getText().toString();
         spinner.getSelectedItem().toString();
 
-        // Validação: Nome do local
         if (Local.isEmpty()) {
             Toast.makeText(this, "Por favor, insira o nome do local.", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Validação: Categoria
         if (spinner.getSelectedItemPosition() == Spinner.INVALID_POSITION) {
             Toast.makeText(this, "Por favor, selecione uma categoria.", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Validação: Latitude e Longitude
         if (latitudeAtual == 0.0 && longitudeAtual == 0.0) {
             Toast.makeText(this, "Aguarde o GPS obter sua localização.", Toast.LENGTH_SHORT).show();
             return;
         }
         
         BancoDadosSingleton bd = BancoDadosSingleton.getInstance();
-
         String nomeCategoria = spinner.getSelectedItem().toString();
         Cursor c = bd.buscar("Categoria", new String[]{"idCategoria"}, "nome = '" + nomeCategoria + "'", null);
         int categoriaId = -1;
@@ -168,30 +161,21 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = bd.buscar("Checkin", new String[]{"Local", "qtdVisitas", "cat", "latitude", "longitude"}, "Local = '" + Local + "'", null);
         valores = new ContentValues();
 
-        // Se o local já existe no bd atualiza o qtdVisitas
         if (cursor.moveToFirst()){
             int qtdVisitasAtual = cursor.getInt(cursor.getColumnIndexOrThrow("qtdVisitas"));
             valores.put("qtdVisitas", qtdVisitasAtual + 1);
             bd.atualizar("Checkin", valores, "Local = '" + Local + "'");
             Toast.makeText(this, "Check-in atualizado!", Toast.LENGTH_SHORT).show();
         } else {
-            // -20.756130344704516, -42.87517139116986 fazendiha
-            //-20.757293764873097, -42.87511449290152  ufv
-            // -20.76061471367571, -42.86852732141032 ru1
-            // -20.761858702321916, -42.86985769702954 mu
-            // -20.760559731284303, -42.86758498853464 pva
-            // -20.763560397840216, -42.86630288141098 pvb
             valores.put("Local", Local);
             valores.put("qtdVisitas", 1);
             valores.put("cat", categoriaId);
-            valores.put("latitude", -20.760559731284303);
-            valores.put("longitude", -42.86758498853464);
+            valores.put("latitude", latitudeAtual);
+            valores.put("longitude", longitudeAtual);
             bd.inserir("Checkin", valores);
             Toast.makeText(this, "Check-in realizado!", Toast.LENGTH_SHORT).show();
         }
         cursor.close();
-
-        // Recarregar a tela principal
         finish();
         startActivity(getIntent());
     }
@@ -208,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
         return locais;
     }
-
 
     @Override
     protected void onDestroy() {

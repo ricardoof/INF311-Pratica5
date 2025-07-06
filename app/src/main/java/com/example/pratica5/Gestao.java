@@ -25,10 +25,8 @@ public class Gestao extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbarGestao);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("GestãoCheckin");
-
         layoutConteudo = findViewById(R.id.layoutConteudoGestao);
         layoutDeletar = findViewById(R.id.layoutDeletarGestao);
-
         carregarCheckins();
     }
 
@@ -58,24 +56,18 @@ public class Gestao extends AppCompatActivity {
         if (cursor.moveToFirst()) {
             do {
                 String nomeLocal = cursor.getString(cursor.getColumnIndexOrThrow("Local"));
-
-                // TextView do nome do local
                 TextView txtLocal = new TextView(this);
                 txtLocal.setText(nomeLocal);
-                txtLocal.setTextSize(16f);
-                txtLocal.setPadding(20, 20, 20, 20);
+                txtLocal.setPadding(50, 20, 20, 20);
                 layoutConteudo.addView(txtLocal);
 
-                // Botão de exclusão
                 ImageButton btnExcluir = new ImageButton(this);
                 btnExcluir.setImageResource(android.R.drawable.ic_delete);
                 btnExcluir.setBackground(null);
                 btnExcluir.setTag(nomeLocal);
-                btnExcluir.setContentDescription("Excluir " + nomeLocal);
-                btnExcluir.setPadding(20, 20, 20, 20);
+                btnExcluir.setPadding(10, 10, 50, 0);
                 layoutDeletar.addView(btnExcluir);
 
-                // Evento de clique
                 btnExcluir.setOnClickListener(view -> {
                     String localParaExcluir = (String) view.getTag();
                     new AlertDialog.Builder(Gestao.this)
@@ -84,7 +76,6 @@ public class Gestao extends AppCompatActivity {
                             .setNegativeButton("NÃO", null)
                             .setPositiveButton("SIM", (dialog, which) -> {
                                 bd.deletar("Checkin", "Local = ?", new String[]{localParaExcluir});
-
                                 finish();
                                 startActivity(getIntent());
                             })

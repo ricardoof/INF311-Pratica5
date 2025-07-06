@@ -3,21 +3,17 @@ package com.example.pratica5;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
@@ -34,7 +30,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa);
 
-        // Toolbar
         toolbar = findViewById(R.id.toolbarMapa);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("MapaCheckin");
@@ -77,7 +72,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d("MAPA", "MAPA");
         map = googleMap;
         BancoDadosSingleton bd = BancoDadosSingleton.getInstance();
         locais = bd.buscar("Checkin ch, Categoria cat", new String[]{"ch.Local Local", "ch.latitude lat", "ch.longitude lng", "ch.qtdVisitas visitas", "cat.nome nomeCategoria"}, "ch.cat = cat.idCategoria", null);
@@ -93,8 +87,13 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                 map.addMarker(new MarkerOptions().position(coordenada).title(local).snippet("Categoria: " + categoria + " Visitas: " + visitas));
             } while (locais.moveToNext());
         }
-
-        if (locais.getCount() > 0) {
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("latitudeAtual") && intent.hasExtra("longitudeAtual")) {
+            double latAtual = intent.getDoubleExtra("latitudeAtual", 0.0);
+            double lngAtual = intent.getDoubleExtra("longitudeAtual", 0.0);
+            LatLng localAtual = new LatLng(latAtual, lngAtual);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(localAtual, 16));
+        } else if (locais.getCount() > 0) {
             locais.moveToFirst();
             double firstLat = locais.getDouble(locais.getColumnIndexOrThrow("lat"));
             double firstLong = locais.getDouble(locais.getColumnIndexOrThrow("lng"));

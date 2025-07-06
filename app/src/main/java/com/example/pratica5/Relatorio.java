@@ -23,11 +23,8 @@ public class Relatorio extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbarRelatorio);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Relatório");
-
-        // Inicializar os layouts da lista
         layoutConteudoRelatorio = findViewById(R.id.layoutConteudoRelatorio);
         layoutDeletarRelatorio = findViewById(R.id.layoutDeletarRelatorio);
-
         carregarRelatorio();
     }
 
@@ -50,29 +47,23 @@ public class Relatorio extends AppCompatActivity {
     private void carregarRelatorio() {
         layoutConteudoRelatorio.removeAllViews();
         layoutDeletarRelatorio.removeAllViews();
-
         BancoDadosSingleton bd = BancoDadosSingleton.getInstance();
         Cursor cursor = bd.buscar("Checkin", new String[]{"Local", "qtdVisitas"}, null, "qtdVisitas DESC");
-
         if (cursor.moveToFirst()) {
             do {
                 String nomeLocal = cursor.getString(cursor.getColumnIndexOrThrow("Local"));
                 int visitas = cursor.getInt(cursor.getColumnIndexOrThrow("qtdVisitas"));
 
-                // TextView para o nome do local
                 TextView txtLocal = new TextView(this);
                 txtLocal.setText(nomeLocal);
-                txtLocal.setTextSize(16f);
-                txtLocal.setPadding(16, 24, 16, 24);
+                txtLocal.setPadding(50, 15, 10, 10);
                 layoutConteudoRelatorio.addView(txtLocal);
 
-                // TextView para a quantidade de visitas
                 TextView txtVisitas = new TextView(this);
                 txtVisitas.setText(String.valueOf(visitas));
                 txtVisitas.setTextSize(16f);
-                txtVisitas.setPadding(16, 24, 16, 24);
+                txtVisitas.setPadding(10, 10, 70, 10);
                 layoutDeletarRelatorio.addView(txtVisitas);
-
             } while (cursor.moveToNext());
         }
         cursor.close();
